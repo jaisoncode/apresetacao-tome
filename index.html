@@ -1,0 +1,827 @@
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Literatura Contemporânea Brasileira</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f8f5f2;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Cormorant Garamond', serif;
+        }
+        
+        .slide {
+            display: none;
+            animation: fadeIn 0.8s;
+        }
+        
+        .slide.active {
+            display: block;
+        }
+        
+        .obra-card {
+            transition: all 0.3s ease;
+        }
+        
+        .obra-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 50;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background: linear-gradient(to right, #8b5cf6, #d946ef);
+            width: 0;
+            transition: width 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .nav-dot {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-dot.active {
+            background: linear-gradient(135deg, #8b5cf6, #d946ef);
+            transform: scale(1.3);
+        }
+        
+        .author-image {
+            background-size: cover;
+            background-position: center;
+            height: 250px;
+        }
+        
+        .book-cover {
+            background-size: cover;
+            background-position: center;
+            height: 220px;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .book-cover::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .book-cover:hover::after {
+            opacity: 1;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #4c1d95, #7e22ce, #9333ea, #a855f7);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #8b5cf6, #d946ef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .gradient-border {
+            position: relative;
+        }
+        
+        .gradient-border:before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #8b5cf6, #d946ef, #8b5cf6);
+            z-index: -1;
+            border-radius: 0.5rem;
+        }
+        
+        .start-button {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+        
+        .start-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.7s ease;
+        }
+        
+        .start-button:hover:before {
+            left: 100%;
+        }
+        
+        .presentation-container {
+            display: none;
+        }
+        
+        .presentation-container.show {
+            display: block;
+            animation: fadeIn 1s;
+        }
+        
+        .intro-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #f8f5f2 0%, #eee6ff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .intro-container:before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0) 70%);
+            animation: rotate 30s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .intro-content {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .floating-shapes div {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(217, 70, 239, 0.2));
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        .floating-shapes div:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .floating-shapes div:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            left: 80%;
+            animation-delay: 2s;
+        }
+        
+        .floating-shapes div:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            top: 30%;
+            left: 80%;
+            animation-delay: 4s;
+        }
+        
+        .floating-shapes div:nth-child(4) {
+            width: 120px;
+            height: 120px;
+            top: 70%;
+            left: 20%;
+            animation-delay: 6s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        
+        /* Ajuste para capas de livros */
+        .book-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .book-cover-container {
+            flex: 0 0 auto;
+            position: relative;
+            padding-top: 150%; /* Proporção para capas de livros (3:2) */
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .book-cover-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .book-cover-container:hover .book-cover-image {
+            transform: scale(1.05);
+        }
+        
+        .book-info {
+            flex: 1;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body>
+    <!-- Intro Screen -->
+    <div class="intro-container" id="introScreen">
+        <div class="floating-shapes">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="intro-content">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 gradient-text">Literatura Contemporânea Brasileira</h1>
+            <p class="text-xl md:text-2xl mb-10 text-gray-700">Uma jornada pelo Pós-modernismo na literatura brasileira</p>
+            <button id="startButton" class="start-button gradient-bg text-white px-10 py-4 rounded-full text-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transform hover:scale-105">
+                Iniciar Apresentação
+                <i class="fas fa-arrow-right ml-3"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Presentation -->
+    <div class="presentation-container" id="presentationContainer">
+        <div class="min-h-screen flex flex-col">
+            <!-- Header -->
+            <header class="bg-gradient-to-r from-purple-900 via-violet-800 to-fuchsia-800 text-white py-6 px-4 shadow-lg">
+                <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+                    <h1 class="text-3xl md:text-4xl font-bold mb-4 md:mb-0">Literatura Contemporânea Brasileira</h1>
+                    <p class="text-lg italic">Pós-modernismo</p>
+                </div>
+            </header>
+            
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            
+            <!-- Main Content -->
+            <main class="flex-grow container mx-auto px-4 py-8">
+                <!-- Slides Container -->
+                <div class="slides-container relative">
+                    <!-- Slide 1: Conceição Evaristo -->
+                    <div class="slide active" id="slide-1">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="md:col-span-1">
+                                <div class="author-image rounded-lg shadow-lg mb-6" style="background-image: url('https://placehold.co/600x400/9333ea/ffffff?text=Conceição+Evaristo')"></div>
+                                <h2 class="text-3xl font-bold mb-4 gradient-text">Conceição Evaristo</h2>
+                                <p class="text-lg mb-6">Escritora brasileira cuja obra é marcada pela perspectiva afro-brasileira e pela experiência feminina negra. Seu conceito de "escrevivência" une escrita e vivência, trazendo à literatura vozes historicamente silenciadas.</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="obra-card bg-white rounded-lg shadow-md overflow-hidden">
+                                        <div class="book-container">
+                                            <div class="book-cover-container cursor-pointer" onclick="openModal('https://placehold.co/600x900/e9d8a6/333333?text=Ponciá+Vicêncio', 'Ponciá Vicêncio (2003)', 'Romance que narra a trajetória de uma mulher negra desde sua infância em uma comunidade rural de descendentes de escravizados até sua vida adulta na cidade. A obra aborda questões de identidade, memória ancestral e os desafios enfrentados pela população negra no Brasil.')">
+                                                <div class="book-cover-image" style="background-image: url('https://placehold.co/600x900/e9d8a6/333333?text=Ponciá+Vicêncio')"></div>
+                                            </div>
+                                            <div class="book-info">
+                                                <h3 class="text-xl font-bold mb-2">Ponciá Vicêncio (2003)</h3>
+                                                <p class="text-gray-700">Romance que narra a trajetória de uma mulher negra desde sua infância em uma comunidade rural de descendentes de escravizados até sua vida adulta na cidade.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="obra-card bg-white rounded-lg shadow-md overflow-hidden">
+                                        <div class="book-container">
+                                            <div class="book-cover-container cursor-pointer" onclick="openModal('https://placehold.co/600x900/e9d8a6/333333?text=Olhos+d\'Água', 'Olhos d\'Água (2014)', 'Coletânea de contos que retrata o cotidiano de personagens negras, principalmente mulheres, abordando temas como violência, pobreza, racismo e resistência. A obra foi vencedora do Prêmio Jabuti de Literatura.')">
+                                                <div class="book-cover-image" style="background-image: url('https://placehold.co/600x900/e9d8a6/333333?text=Olhos+d\'Água')"></div>
+                                            </div>
+                                            <div class="book-info">
+                                                <h3 class="text-xl font-bold mb-2">Olhos d'Água (2014)</h3>
+                                                <p class="text-gray-700">Coletânea de contos que retrata o cotidiano de personagens negras, principalmente mulheres, abordando temas como violência, pobreza, racismo e resistência.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 2: Itamar Vieira Junior -->
+                    <div class="slide" id="slide-2">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="md:col-span-1">
+                                <div class="author-image rounded-lg shadow-lg mb-6" style="background-image: url('https://placehold.co/600x400/9333ea/ffffff?text=Itamar+Vieira+Junior')"></div>
+                                <h2 class="text-3xl font-bold mb-4 gradient-text">Itamar Vieira Junior</h2>
+                                <p class="text-lg mb-6">Geógrafo e escritor baiano que ganhou destaque nacional e internacional com seu romance "Torto Arado". Sua obra aborda questões sociais, territoriais e raciais do Brasil profundo.</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <div class="obra-card bg-white rounded-lg shadow-md overflow-hidden">
+                                    <div class="book-container">
+                                        <div class="book-cover-container cursor-pointer" onclick="openModal('https://placehold.co/600x900/e9d8a6/333333?text=Torto+Arado', 'Torto Arado (2019)', 'Romance ambientado no sertão baiano que narra a história de duas irmãs, Bibiana e Belonísia, marcadas por um acidente na infância. A obra aborda temas como a luta pela terra, o trabalho rural, as religiões de matriz africana e as desigualdades sociais no Brasil. Vencedor do Prêmio Leya e do Prêmio Jabuti.')">
+                                            <div class="book-cover-image" style="background-image: url('https://placehold.co/600x900/e9d8a6/333333?text=Torto+Arado')"></div>
+                                        </div>
+                                        <div class="book-info">
+                                            <h3 class="text-xl font-bold mb-2">Torto Arado (2019)</h3>
+                                            <p class="text-gray-700">Romance ambientado no sertão baiano que narra a história de duas irmãs, Bibiana e Belonísia, marcadas por um acidente na infância. A obra aborda temas como a luta pela terra, o trabalho rural, as religiões de matriz africana e as desigualdades sociais no Brasil.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 3: Chico Buarque -->
+                    <div class="slide" id="slide-3">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="md:col-span-1">
+                                <div class="author-image rounded-lg shadow-lg mb-6" style="background-image: url('https://placehold.co/600x400/9333ea/ffffff?text=Chico+Buarque')"></div>
+                                <h2 class="text-3xl font-bold mb-4 gradient-text">Chico Buarque</h2>
+                                <p class="text-lg mb-6">Músico, dramaturgo e escritor brasileiro reconhecido por sua versatilidade artística. Na literatura, destaca-se por uma prosa sofisticada e pela abordagem de temas como identidade, memória e relações humanas complexas.</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="obra-card bg-white rounded-lg shadow-md overflow-hidden">
+                                        <div class="book-container">
+                                            <div class="book-cover-container cursor-pointer" onclick="openModal('https://placehold.co/600x900/e9d8a6/333333?text=Budapeste', 'Budapeste (2003)', 'Romance que narra a história de José Costa, um ghost-writer brasileiro que, após uma escala forçada em Budapeste, desenvolve uma obsessão pela língua húngara. A obra explora temas como identidade, autoria e o poder da linguagem.')">
+                                                <div class="book-cover-image" style="background-image: url('https://placehold.co/600x900/e9d8a6/333333?text=Budapeste')"></div>
+                                            </div>
+                                            <div class="book-info">
+                                                <h3 class="text-xl font-bold mb-2">Budapeste (2003)</h3>
+                                                <p class="text-gray-700">Romance que narra a história de José Costa, um ghost-writer brasileiro que, após uma escala forçada em Budapeste, desenvolve uma obsessão pela língua húngara.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="obra-card bg-white rounded-lg shadow-md overflow-hidden">
+                                        <div class="book-container">
+                                            <div class="book-cover-container cursor-pointer" onclick="openModal('https://placehold.co/600x900/e9d8a6/333333?text=Leite+Derramado', 'Leite Derramado (2009)', 'Romance narrado por Eulálio Montenegro d\'Assumpção, um idoso centenário que, de seu leito de hospital, relata a saga de sua família ao longo de várias gerações. A obra traça um panorama da história do Brasil, abordando temas como decadência, memória e relações raciais.')">
+                                                <div class="book-cover-image" style="background-image: url('https://placehold.co/600x900/e9d8a6/333333?text=Leite+Derramado')"></div>
+                                            </div>
+                                            <div class="book-info">
+                                                <h3 class="text-xl font-bold mb-2">Leite Derramado (2009)</h3>
+                                                <p class="text-gray-700">Romance narrado por Eulálio Montenegro d'Assumpção, um idoso centenário que, de seu leito de hospital, relata a saga de sua família ao longo de várias gerações.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 4: Milton Hatoum -->
+                    <div class="slide" id="slide-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="md:col-span-1">
+                                <div class="author-image rounded-lg shadow-lg mb-6" style="background-image: url('https://placehold.co/600x400/9333ea/ffffff?text=Milton+Hatoum')"></div>
+                                <h2 class="text-3xl font-bold mb-4 gradient-text">Milton Hatoum</h2>
+                                <p class="text-lg mb-6">Escritor amazonense de ascendência libanesa, cuja obra é marcada pela ambientação amazônica e pela exploração de temas como memória, identidade cultural e relações familiares complexas.</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="obra-card bg-white rounded-lg shadow-md overflow-hidden">
+                                        <div class="book-container">
+                                            <div class="book-cover-container cursor-pointer" onclick="openModal('https://placehold.co/600x900/e9d8a6/333333?text=Dois+Irmãos', 'Dois Irmãos (2000)', 'Romance que narra a história dos gêmeos Omar e Yaqub e sua relação conflituosa, tendo como pano de fundo a cidade de Manaus em transformação. A obra explora temas como rivalidade fraterna, imigração libanesa no Brasil e as mudanças sociais na Amazônia.')">
+                                                <div class="book-cover-image" style="background-image: url('https://placehold.co/600x900/e9d8a6/333333?text=Dois+Irmãos')"></div>
+                                            </div>
+                                            <div class="book-info">
+                                                <h3 class="text-xl font-bold mb-2">Dois Irmãos (2000)</h3>
+                                                <p class="text-gray-700">Romance que narra a história dos gêmeos Omar e Yaqub e sua relação conflituosa, tendo como pano de fundo a cidade de Manaus em transformação.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="obra-card bg-white rounded-lg shadow-md overflow-hidden">
+                                        <div class="book-container">
+                                            <div class="book-cover-container cursor-pointer" onclick="openModal('https://placehold.co/600x900/e9d8a6/333333?text=Órfãos+do+Eldorado', 'Órfãos do Eldorado (2008)', 'Novela que mescla realidade e mito ao narrar a história de Arminto Cordovil, herdeiro de um império de navegação na Amazônia, e sua obsessão por uma misteriosa mulher. A obra dialoga com lendas amazônicas, especialmente o mito da cidade encantada submersa.')">
+                                                <div class="book-cover-image" style="background-image: url('https://placehold.co/600x900/e9d8a6/333333?text=Órfãos+do+Eldorado')"></div>
+                                            </div>
+                                            <div class="book-info">
+                                                <h3 class="text-xl font-bold mb-2">Órfãos do Eldorado (2008)</h3>
+                                                <p class="text-gray-700">Novela que mescla realidade e mito ao narrar a história de Arminto Cordovil, herdeiro de um império de navegação na Amazônia, e sua obsessão por uma misteriosa mulher.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 5: Paulo Scott -->
+                    <div class="slide" id="slide-5">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="md:col-span-1">
+                                <div class="author-image rounded-lg shadow-lg mb-6" style="background-image: url('https://placehold.co/600x400/9333ea/ffffff?text=Paulo+Scott')"></div>
+                                <h2 class="text-3xl font-bold mb-4 gradient-text">Paulo Scott</h2>
+                                <p class="text-lg mb-6">Escritor, poeta e advogado gaúcho cuja obra aborda questões sociais e políticas do Brasil contemporâneo, com ênfase nas desigualdades e tensões raciais e sociais.</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <div class="obra-card bg-white rounded-lg shadow-md overflow-hidden">
+                                    <div class="book-container">
+                                        <div class="book-cover-container cursor-pointer" onclick="openModal('https://placehold.co/600x900/e9d8a6/333333?text=Marrom+e+Amarelo', 'Marrom e Amarelo (2019)', 'Romance que aborda as tensões raciais no Brasil contemporâneo através da história de dois irmãos: um negro e outro de pele clara. A obra discute temas como racismo estrutural, políticas afirmativas e privilégios sociais, questionando a ideia de democracia racial brasileira.')">
+                                            <div class="book-cover-image" style="background-image: url('https://placehold.co/600x900/e9d8a6/333333?text=Marrom+e+Amarelo')"></div>
+                                        </div>
+                                        <div class="book-info">
+                                            <h3 class="text-xl font-bold mb-2">Marrom e Amarelo (2019)</h3>
+                                            <p class="text-gray-700">Romance que aborda as tensões raciais no Brasil contemporâneo através da história de dois irmãos: um negro e outro de pele clara. A obra discute temas como racismo estrutural, políticas afirmativas e privilégios sociais.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 6: Ferréz -->
+                    <div class="slide" id="slide-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="md:col-span-1">
+                                <div class="author-image rounded-lg shadow-lg mb-6" style="background-image: url('https://placehold.co/600x400/9333ea/ffffff?text=Ferréz')"></div>
+                                <h2 class="text-3xl font-bold mb-4 gradient-text">Ferréz</h2>
+                                <p class="text-lg mb-6">Escritor, rapper e ativista cultural da periferia de São Paulo, pioneiro da chamada "Literatura Marginal". Sua obra retrata o cotidiano das periferias urbanas brasileiras com uma linguagem própria e autêntica.</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <div class="obra-card bg-white rounded-lg shadow-md overflow-hidden">
+                                    <div class="book-container">
+                                        <div class="book-cover-container cursor-pointer" onclick="openModal('https://placehold.co/600x900/e9d8a6/333333?text=Capão+Pecado', 'Capão Pecado (2000)', 'Romance ambientado no bairro Capão Redondo, na periferia de São Paulo, que narra a vida de Rael e seus amigos em meio à violência, pobreza e exclusão social. A obra é considerada um marco da literatura marginal brasileira, trazendo à tona a realidade das periferias urbanas com uma linguagem própria e autêntica.')">
+                                            <div class="book-cover-image" style="background-image: url('https://placehold.co/600x900/e9d8a6/333333?text=Capão+Pecado')"></div>
+                                        </div>
+                                        <div class="book-info">
+                                            <h3 class="text-xl font-bold mb-2">Capão Pecado (2000)</h3>
+                                            <p class="text-gray-700">Romance ambientado no bairro Capão Redondo, na periferia de São Paulo, que narra a vida de Rael e seus amigos em meio à violência, pobreza e exclusão social.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 7: Carola Saavedra -->
+                    <div class="slide" id="slide-7">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="md:col-span-1">
+                                <div class="author-image rounded-lg shadow-lg mb-6" style="background-image: url('https://placehold.co/600x400/9333ea/ffffff?text=Carola+Saavedra')"></div>
+                                <h2 class="text-3xl font-bold mb-4 gradient-text">Carola Saavedra</h2>
+                                <p class="text-lg mb-6">Escritora brasileira nascida no Chile, cuja obra é marcada por uma prosa experimental e pela exploração de temas como deslocamento, identidade e relações afetivas contemporâneas.</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="obra-card bg-white rounded-lg shadow-md overflow-hidden">
+                                        <div class="book-container">
+                                            <div class="book-cover-container cursor-pointer" onclick="openModal('https://placehold.co/600x900/e9d8a6/333333?text=O+Inventário+das+Coisas+Ausentes', 'O Inventário das Coisas Ausentes (2014)', 'Romance dividido em duas partes: \"Caderno de Anotações\" e \"Ficção\". A obra explora os limites entre realidade e ficção, memória e invenção, através da história de um escritor e seu relacionamento com uma mulher misteriosa.')">
+                                                <div class="book-cover-image" style="background-image: url('https://placehold.co/600x900/e9d8a6/333333?text=O+Inventário+das+Coisas+Ausentes')"></div>
+                                            </div>
+                                            <div class="book-info">
+                                                <h3 class="text-xl font-bold mb-2">O Inventário das Coisas Ausentes (2014)</h3>
+                                                <p class="text-gray-700">Romance dividido em duas partes: "Caderno de Anotações" e "Ficção". A obra explora os limites entre realidade e ficção, memória e invenção.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="obra-card bg-white rounded-lg shadow-md overflow-hidden">
+                                        <div class="book-container">
+                                            <div class="book-cover-container cursor-pointer" onclick="openModal('https://placehold.co/600x900/e9d8a6/333333?text=Paisagem+com+Dromedário', 'Paisagem com Dromedário (2010)', 'Romance narrado através de gravações de áudio feitas pela protagonista Érika, que se isola em uma ilha após a morte de seu amante. A obra explora temas como luto, memória e a impossibilidade de representar completamente a experiência humana.')">
+                                                <div class="book-cover-image" style="background-image: url('https://placehold.co/600x900/e9d8a6/333333?text=Paisagem+com+Dromedário')"></div>
+                                            </div>
+                                            <div class="book-info">
+                                                <h3 class="text-xl font-bold mb-2">Paisagem com Dromedário (2010)</h3>
+                                                <p class="text-gray-700">Romance narrado através de gravações de áudio feitas pela protagonista Érika, que se isola em uma ilha após a morte de seu amante.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 8: Jeferson Tenório -->
+                    <div class="slide" id="slide-8">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="md:col-span-1">
+                                <div class="author-image rounded-lg shadow-lg mb-6" style="background-image: url('https://placehold.co/600x400/9333ea/ffffff?text=Jeferson+Tenório')"></div>
+                                <h2 class="text-3xl font-bold mb-4 gradient-text">Jeferson Tenório</h2>
+                                <p class="text-lg mb-6">Escritor e professor gaúcho cuja obra aborda questões raciais, violência e relações familiares no Brasil contemporâneo, com uma prosa sensível e contundente.</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <div class="obra-card bg-white rounded-lg shadow-md overflow-hidden">
+                                    <div class="book-container">
+                                        <div class="book-cover-container cursor-pointer" onclick="openModal('https://placehold.co/600x900/e9d8a6/333333?text=O+Avesso+da+Pele', 'O Avesso da Pele (2020)', 'Romance que narra a história de Pedro, um jovem que, após a morte do pai, assassinado em uma abordagem policial, busca reconstruir a trajetória paterna. A obra aborda temas como racismo estrutural, violência policial e relações familiares complexas. Vencedor do Prêmio Jabuti de Literatura em 2021.')">
+                                            <div class="book-cover-image" style="background-image: url('https://placehold.co/600x900/e9d8a6/333333?text=O+Avesso+da+Pele')"></div>
+                                        </div>
+                                        <div class="book-info">
+                                            <h3 class="text-xl font-bold mb-2">O Avesso da Pele (2020)</h3>
+                                            <p class="text-gray-700">Romance que narra a história de Pedro, um jovem que, após a morte do pai, assassinado em uma abordagem policial, busca reconstruir a trajetória paterna.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 9: Geovani Martins -->
+                    <div class="slide" id="slide-9">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="md:col-span-1">
+                                <div class="author-image rounded-lg shadow-lg mb-6" style="background-image: url('https://placehold.co/600x400/9333ea/ffffff?text=Geovani+Martins')"></div>
+                                <h2 class="text-3xl font-bold mb-4 gradient-text">Geovani Martins</h2>
+                                <p class="text-lg mb-6">Escritor carioca oriundo da favela do Vidigal, cuja obra retrata o cotidiano das periferias urbanas do Rio de Janeiro com uma linguagem autêntica e um olhar sensível para as complexidades sociais.</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <div class="obra-card bg-white rounded-lg shadow-md overflow-hidden">
+                                    <div class="book-container">
+                                        <div class="book-cover-container cursor-pointer" onclick="openModal('https://placehold.co/600x900/e9d8a6/333333?text=O+Sol+na+Cabeça', 'O Sol na Cabeça (2018)', 'Coletânea de contos que retrata o cotidiano de jovens das favelas cariocas, abordando temas como violência policial, tráfico de drogas, gentrificação e as pequenas alegrias da vida nas periferias. A obra se destaca pela linguagem autêntica, que incorpora gírias e expressões locais.')">
+                                            <div class="book-cover-image" style="background-image: url('https://placehold.co/600x900/e9d8a6/333333?text=O+Sol+na+Cabeça')"></div>
+                                        </div>
+                                        <div class="book-info">
+                                            <h3 class="text-xl font-bold mb-2">O Sol na Cabeça (2018)</h3>
+                                            <p class="text-gray-700">Coletânea de contos que retrata o cotidiano de jovens das favelas cariocas, abordando temas como violência policial, tráfico de drogas, gentrificação e as pequenas alegrias da vida nas periferias.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 10: Djamila Ribeiro -->
+                    <div class="slide" id="slide-10">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="md:col-span-1">
+                                <div class="author-image rounded-lg shadow-lg mb-6" style="background-image: url('https://placehold.co/600x400/9333ea/ffffff?text=Djamila+Ribeiro')"></div>
+                                <h2 class="text-3xl font-bold mb-4 gradient-text">Djamila Ribeiro</h2>
+                                <p class="text-lg mb-6">Filósofa, escritora e ativista feminista brasileira, cuja obra acadêmica e ensaística tem contribuído significativamente para os debates sobre feminismo negro e questões raciais no Brasil contemporâneo.</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <div class="obra-card bg-white rounded-lg shadow-md overflow-hidden">
+                                    <div class="book-container">
+                                        <div class="book-cover-container cursor-pointer" onclick="openModal('https://placehold.co/600x900/e9d8a6/333333?text=Pequeno+Manual+Antirracista', 'Pequeno Manual Antirracista (2019)', 'Obra de não ficção que apresenta, de forma acessível e didática, conceitos fundamentais para a compreensão do racismo estrutural e caminhos para o antirracismo na prática cotidiana. O livro tornou-se um best-seller e referência importante nos debates sobre questões raciais no Brasil.')">
+                                            <div class="book-cover-image" style="background-image: url('https://placehold.co/600x900/e9d8a6/333333?text=Pequeno+Manual+Antirracista')"></div>
+                                        </div>
+                                        <div class="book-info">
+                                            <h3 class="text-xl font-bold mb-2">Pequeno Manual Antirracista (2019)</h3>
+                                            <p class="text-gray-700">Obra de não ficção que apresenta, de forma acessível e didática, conceitos fundamentais para a compreensão do racismo estrutural e caminhos para o antirracismo na prática cotidiana.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 11: Racionais MC's -->
+                    <div class="slide" id="slide-11">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="md:col-span-1">
+                                <div class="author-image rounded-lg shadow-lg mb-6" style="background-image: url('https://placehold.co/600x400/9333ea/ffffff?text=Racionais+MC\'s')"></div>
+                                <h2 class="text-3xl font-bold mb-4 gradient-text">Racionais MC's</h2>
+                                <p class="text-lg mb-6">Grupo de rap brasileiro formado em 1988, considerado um dos mais influentes da música brasileira contemporânea. Suas letras, que abordam a realidade das periferias urbanas, são reconhecidas pelo valor literário e pela contundência social.</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="obra-card bg-white rounded-lg shadow-md overflow-hidden">
+                                        <div class="book-container">
+                                            <div class="book-cover-container cursor-pointer" onclick="openModal('https://placehold.co/600x900/e9d8a6/333333?text=Diário+de+um+Detento', 'Diário de um Detento', 'Música lançada em 1997 no álbum \"Sobrevivendo no Inferno\", que narra o massacre do Carandiru a partir da perspectiva de um detento. A letra, escrita em parceria com Jocenir, ex-detento do Carandiru, é considerada um marco da literatura marginal brasileira e um importante documento histórico sobre o sistema prisional brasileiro.')">
+                                                <div class="book-cover-image" style="background-image: url('https://placehold.co/600x900/e9d8a6/333333?text=Diário+de+um+Detento')"></div>
+                                            </div>
+                                            <div class="book-info">
+                                                <h3 class="text-xl font-bold mb-2">Diário de um Detento</h3>
+                                                <p class="text-gray-700">Música lançada em 1997 no álbum "Sobrevivendo no Inferno", que narra o massacre do Carandiru a partir da perspectiva de um detento.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="obra-card bg-white rounded-lg shadow-md overflow-hidden">
+                                        <div class="book-container">
+                                            <div class="book-cover-container cursor-pointer" onclick="openModal('https://placehold.co/600x900/e9d8a6/333333?text=Vida+Loka', 'Vida Loka', 'Música dividida em duas partes, lançada no álbum \"Nada como um Dia após o Outro Dia\" (2002), que reflete sobre a vida nas periferias urbanas brasileiras, abordando temas como desigualdade social, violência e a busca por dignidade em um contexto adverso.')">
+                                                <div class="book-cover-image" style="background-image: url('https://placehold.co/600x900/e9d8a6/333333?text=Vida+Loka')"></div>
+                                            </div>
+                                            <div class="book-info">
+                                                <h3 class="text-xl font-bold mb-2">Vida Loka</h3>
+                                                <p class="text-gray-700">Música dividida em duas partes, lançada no álbum "Nada como um Dia após o Outro Dia" (2002), que reflete sobre a vida nas periferias urbanas brasileiras.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Navigation Controls -->
+                <div class="flex justify-between items-center mt-8">
+                    <button id="prevBtn" class="bg-gradient-to-r from-purple-700 to-fuchsia-700 hover:from-purple-800 hover:to-fuchsia-800 text-white px-6 py-2 rounded-full flex items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-md">
+                        <i class="fas fa-chevron-left mr-2"></i> Anterior
+                    </button>
+                    
+                    <div class="flex space-x-2">
+                        <div class="nav-dot w-3 h-3 rounded-full bg-gray-300 cursor-pointer active" data-slide="1"></div>
+                        <div class="nav-dot w-3 h-3 rounded-full bg-gray-300 cursor-pointer" data-slide="2"></div>
+                        <div class="nav-dot w-3 h-3 rounded-full bg-gray-300 cursor-pointer" data-slide="3"></div>
+                        <div class="nav-dot w-3 h-3 rounded-full bg-gray-300 cursor-pointer" data-slide="4"></div>
+                        <div class="nav-dot w-3 h-3 rounded-full bg-gray-300 cursor-pointer" data-slide="5"></div>
+                        <div class="nav-dot w-3 h-3 rounded-full bg-gray-300 cursor-pointer" data-slide="6"></div>
+                        <div class="nav-dot w-3 h-3 rounded-full bg-gray-300 cursor-pointer" data-slide="7"></div>
+                        <div class="nav-dot w-3 h-3 rounded-full bg-gray-300 cursor-pointer" data-slide="8"></div>
+                        <div class="nav-dot w-3 h-3 rounded-full bg-gray-300 cursor-pointer" data-slide="9"></div>
+                        <div class="nav-dot w-3 h-3 rounded-full bg-gray-300 cursor-pointer" data-slide="10"></div>
+                        <div class="nav-dot w-3 h-3 rounded-full bg-gray-300 cursor-pointer" data-slide="11"></div>
+                    </div>
+                    
+                    <button id="nextBtn" class="bg-gradient-to-r from-purple-700 to-fuchsia-700 hover:from-purple-800 hover:to-fuchsia-800 text-white px-6 py-2 rounded-full flex items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-md">
+                        Próximo <i class="fas fa-chevron-right ml-2"></i>
+                    </button>
+                </div>
+            </main>
+            
+            <!-- Footer -->
+            <footer class="bg-gradient-to-r from-gray-800 to-gray-900 text-white py-6 px-4 text-center">
+                <p class="text-lg">Literatura Contemporânea Brasileira - Pós-modernismo</p>
+                <button id="returnToIntroBtn" class="mt-4 bg-transparent border border-white hover:bg-white hover:text-gray-900 text-white px-4 py-2 rounded-full text-sm transition-all duration-300">
+                    Voltar à Tela Inicial
+                </button>
+            </footer>
+        </div>
+    </div>
+    
+    <!-- Modal for fullscreen images -->
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <div class="max-w-4xl mx-auto p-4 relative" onclick="event.stopPropagation()">
+            <button class="absolute top-4 right-4 text-white text-2xl bg-black bg-opacity-50 w-10 h-10 rounded-full flex items-center justify-center hover:bg-opacity-70 transition-all duration-300 focus:outline-none" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="bg-white rounded-lg overflow-hidden shadow-2xl">
+                <div class="flex justify-center bg-gray-100">
+                    <img id="modalImage" src="" alt="Imagem em tela cheia" class="max-h-[70vh] object-contain">
+                </div>
+                <div class="p-6 bg-white">
+                    <h3 id="modalTitle" class="text-2xl font-bold mb-2 gradient-text"></h3>
+                    <p id="modalDescription" class="text-gray-700"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Variables
+        let currentSlide = 1;
+        const totalSlides = 11;
+        
+        // Functions
+        function showSlide(slideNumber) {
+            // Hide all slides
+            document.querySelectorAll('.slide').forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            // Show the selected slide
+            document.getElementById(`slide-${slideNumber}`).classList.add('active');
+            
+            // Update navigation dots
+            document.querySelectorAll('.nav-dot').forEach(dot => {
+                dot.classList.remove('active');
+            });
+            document.querySelector(`.nav-dot[data-slide="${slideNumber}"]`).classList.add('active');
+            
+            // Update progress bar
+            const progressPercentage = ((slideNumber - 1) / (totalSlides - 1)) * 100;
+            document.getElementById('progressBar').style.width = `${progressPercentage}%`;
+            
+            // Update current slide
+            currentSlide = slideNumber;
+        }
+        
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+            } else {
+                showSlide(1); // Loop back to first slide
+            }
+        }
+        
+        function prevSlide() {
+            if (currentSlide > 1) {
+                showSlide(currentSlide - 1);
+            } else {
+                showSlide(totalSlides); // Loop to last slide
+            }
+        }
+        
+        function openModal(imageUrl, title, description) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalDescription = document.getElementById('modalDescription');
+            
+            modalImage.src = imageUrl;
+            modalTitle.textContent = title;
+            modalDescription.textContent = description;
+            
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+        
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+        
+        function startPresentation() {
+            document.getElementById('introScreen').style.display = 'none';
+            document.getElementById('presentationContainer').classList.add('show');
+            // Reset to first slide
+            showSlide(1);
+        }
+        
+        function returnToIntro() {
+            document.getElementById('presentationContainer').classList.remove('show');
+            document.getElementById('introScreen').style.display = 'flex';
+        }
+        
+        // Event Listeners
+        document.getElementById('startButton').addEventListener('click', startPresentation);
+        document.getElementById('returnToIntroBtn').addEventListener('click', returnToIntro);
+        document.getElementById('nextBtn').addEventListener('click', nextSlide);
+        document.getElementById('prevBtn').addEventListener('click', prevSlide);
+        
+        // Navigation dots
+        document.querySelectorAll('.nav-dot').forEach(dot => {
+            dot.addEventListener('click', function() {
+                const slideNumber = parseInt(this.getAttribute('data-slide'));
+                showSlide(slideNumber);
+            });
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (document.getElementById('presentationContainer').classList.contains('show')) {
+                if (e.key === 'ArrowRight') {
+                    nextSlide();
+                } else if (e.key === 'ArrowLeft') {
+                    prevSlide();
+                } else if (e.key === 'Escape') {
+                    closeModal();
+                }
+            }
+        });
+        
+        // Close modal when clicking outside the content
+        window.addEventListener('click', function(e) {
+            const modal = document.getElementById('imageModal');
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+        
+        // Initialize
+        showSlide(1);
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'94dc78cc7546f626',t:'MTc0OTU5NjI5MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
